@@ -11,6 +11,21 @@ std::ostream& operator << (std::ostream& str, Lex lex)
     return str;
 }
 
+std::ostream& operator << (std::ostream& str, Type type)
+{
+    switch (type.type) {
+        case TYPE_NULL :
+            str << "TYPE_NULL, " << type.arr_dim;
+            return str;
+        case TYPE_INT :
+            str << "TYPE_INT, " << type.arr_dim;
+            return str;
+        case TYPE_STRING :
+            str << "TYPE_STRING, " << type.arr_dim;
+            return str;
+    }
+}
+            
 std::ostream& operator << (std::ostream& str, Table table) 
 {
     for (auto const &x : table.table) {
@@ -19,7 +34,7 @@ std::ostream& operator << (std::ostream& str, Table table)
     return str;
 }
 
-int Table::put (const std::string& buf, type_of_lex type = LEX_ID)
+int Table::put (const std::string& buf)
 {
     int ind = 0;
     for (const Ident& x : this->table) {
@@ -27,7 +42,7 @@ int Table::put (const std::string& buf, type_of_lex type = LEX_ID)
             return ind;
         ++ind;
     }
-    table.push_back(Ident(buf, type));
+    table.push_back(Ident(buf));
     return ind;
 }
 

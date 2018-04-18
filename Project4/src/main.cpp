@@ -3,7 +3,7 @@
 #include "parser.hpp"
 
 int main() {
-    Scaner scaner("tests/test2.txt");
+    Scaner scaner("tests/test3.txt");
     /*do {
         auto x = scaner.get_lex();
         std::cout << x << std::endl;
@@ -17,7 +17,7 @@ int main() {
         std::cout << x << std::endl;
     };
     scaner.print_TID();*/
-    Parser parser(seq);
+    Parser parser(seq, &scaner.TID);
     parser.parse();
     return 0;
 }

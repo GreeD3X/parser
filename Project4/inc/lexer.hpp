@@ -19,6 +19,12 @@ enum type_of_lex {
     LEX_FIN      //10
 };
 
+enum types {
+    TYPE_NULL,
+    TYPE_INT,
+    TYPE_STRING
+};
+
 class Lex {
 
     type_of_lex type;
@@ -31,16 +37,28 @@ class Lex {
 
 }; 
 
+class Type {
+
+  public :
+    types type;
+    int arr_dim;
+    Type (types type = TYPE_NULL, int arr_dim = 0) : type(type), arr_dim(arr_dim) {}
+    bool operator == (const Type &type) { return this->type == type.type && this->arr_dim == type.arr_dim; }
+    bool operator != (const Type &type) { return this->type != type.type || this->arr_dim != type.arr_dim; }
+    friend std::ostream& operator << (std::ostream&, Type);
+
+};
+
 class Ident {
 
     std::string name;
-    type_of_lex type;
+    Type type;
   public :
-    Ident (const std::string &name, const type_of_lex type) : name(name), type(type) {}
+    Ident (const std::string &name, const Type &type = Type(TYPE_NULL, 0)) : name(name), type(type) {}
     const std::string& get_name () const { return name; }
     void set_name (const std::string &str) { name = str; }
-    type_of_lex get_type () const { return type; }
-    void set_type (type_of_lex new_type){ type = new_type; }
+    Type get_type () const { return type; }
+    void set_type (const Type &new_type){ type = new_type; }
 
 };
 
@@ -49,7 +67,7 @@ class Table {
     std::vector<Ident> table;  
   public :
     Ident& operator[] (int i) { return table[i]; }
-    int put (const std::string&, type_of_lex);
+    int put (const std::string&);
     friend std::ostream& operator << (std::ostream&, Table);
 
 };
@@ -58,12 +76,12 @@ class Scaner {
 
     enum states {S, IDENT, NUM, SIGN};
     std::ifstream file;
-    Table TID;
     states state;
     std::string buf;
     bool read_next;
     char c;
   public :
+    Table TID;
     Scaner (const std::string& name) : state(S), read_next(true) { file.open(name); }
     Lex get_lex ();
     void print_TID () { std::cout << TID; }
