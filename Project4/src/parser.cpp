@@ -5,7 +5,7 @@ void Parser::get_lex ()
     ++cur_pos;
     cur_lex = *cur_pos;
     //std::cout << cur_lex << std::endl;
-    cur_type = cur_lex.get_type();
+    cur_type = cur_lex.get_lex_type();
 }   
 
 void Parser::parse ()
@@ -62,8 +62,8 @@ void Parser::Mult_expr ()
     switch (cur_type) {
         case LEX_ID : 
             check();
-            st_type.push((*TID)[cur_lex.get_val()].get_type());
-            std::cout << (*TID)[cur_lex.get_val()].get_type() << std::endl;
+            st_type.push(cur_lex.get_type());
+            //std::cout << cur_lex.get_type() << std::endl;
             get_lex();
             Id();
             break;
@@ -99,7 +99,7 @@ void Parser::Id ()
         st_type.push(tmp);
         get_lex();
         Expr();
-        std::cout << "<" << st_type.top() << ">" << std::endl;
+        //std::cout << "<" << st_type.top() << ">" << std::endl;
         if (st_type.top() != Type(TYPE_INT, 0)) {
             throw std::runtime_error("INDEX IS NOT INTEGER");
         }
@@ -114,12 +114,11 @@ void Parser::Id ()
 
 void Parser::check ()
 {
-    int ind = cur_lex.get_val();
-    std::string name = (*TID)[cur_lex.get_val()].get_name();
+    std::string name = cur_lex.get_name();
     char letter = 0;
     int cnt = -1;
     for (auto c : name) {
-        std::cout << '|' << c << "|\n";
+        //std::cout << '|' << c << "|\n";
         if (c != 'i' && c != 'j' && c != 'k' && c != 's' && c != 't' && c != 'a') {
             throw std::runtime_error("WRONG ID");
         } else {
@@ -128,10 +127,10 @@ void Parser::check ()
         }
     }
     if (letter == 'i' || letter == 'j' || letter == 'k') {
-        (*TID)[ind].set_type(Type(TYPE_INT, cnt));
+        cur_lex.set_type(Type(TYPE_INT, cnt));
     } else {
         if (letter == 's' || letter == 't') {
-                (*TID)[ind].set_type(Type(TYPE_STRING, cnt));
+                cur_lex.set_type(Type(TYPE_STRING, cnt));
         } else { 
                 throw std::runtime_error("WRONG ID");
         }
@@ -144,7 +143,7 @@ void Parser::check_op ()
     type2 = st_type.top();
     st_type.pop();
     type1 = st_type.top();
-    std::cout << type1 << " " << type2 << std::endl;
+    //std::cout << type1 << " " << type2 << std::endl;
     st_type.pop();
     if (type1 == Type(TYPE_INT, 0) && type2 == Type(TYPE_INT, 0)) {
         st_type.push(Type(TYPE_INT, 0));

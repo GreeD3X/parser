@@ -7,40 +7,40 @@
 
 std::ostream& operator << (std::ostream& str, Lex lex) 
 {
-    switch (lex.type) {
+    switch (lex.lex_type) {
         case LEX_FIN :
-            str << "LEX_FIN" << " , " << lex.val;
-	    break;
+            str << "LEX_FIN" << " , " << lex.name;
+            break;
         case LEX_ID :
-            str << "LEX_ID" << " , " << lex.val;
-	    break;
+            str << "LEX_ID" << " , " << lex.name;
+            break;
         case LEX_NUM :
-            str << "LEX_NUM" << " , " << lex.val;
-	    break;
+            str << "LEX_NUM" << " , " << lex.name;
+            break;
         case LEX_PLUS :
-            str << "LEX_PLUS" << " , " << lex.val;
-	    break;
+            str << "LEX_PLUS" << " , " << lex.name;
+            break;
         case LEX_TIMES :
-            str << "LEX_TIMES" << " , " << lex.val;
-	    break;
+            str << "LEX_TIMES" << " , " << lex.name;
+            break;
         case LEX_LPAREN :
-            str << "LEX_LPAREN" << " , " << lex.val;
-	    break;
+            str << "LEX_LPAREN" << " , " << lex.name;
+            break;
         case LEX_RPAREN :
-            str << "LEX_RPAREN" << " , " << lex.val;
-	    break;
+            str << "LEX_RPAREN" << " , " << lex.name;
+            break;
         case LEX_LSQPAR :
-            str << "LEX_LSQPAR" << " , " << lex.val;
-	    break;
+            str << "LEX_LSQPAR" << " , " << lex.name;
+            break;
         case LEX_RSQPAR :
-            str << "LEX_RSQPAR" << " , " << lex.val;
-	    break;
+            str << "LEX_RSQPAR" << " , " << lex.name;
+            break;
         case LEX_NULL :
-            str << "LEX_NULL" << " , " << lex.val;
-	    break;
-	default :
-	    str << lex.type << " , " << lex.val;
-    }
+            str << "LEX_NULL" << " , " << lex.name;
+            break;
+        default :
+            str << lex.lex_type << " , " << lex.name;
+        }
     return str;
 }
 
@@ -62,26 +62,6 @@ std::ostream& operator << (std::ostream& str, Type type)
     }
 }
             
-std::ostream& operator << (std::ostream& str, Table table) 
-{
-    for (auto const &x : table.table) {
-        str << x.get_name() << " , " << x.get_type() << std::endl;
-    }
-    return str;
-}
-
-int Table::put (const std::string& buf)
-{
-    int ind = 0;
-    for (const Ident& x : this->table) {
-        if (x.get_name() == buf)     
-            return ind;
-        ++ind;
-    }
-    table.push_back(Ident(buf));
-    return ind;
-}
-
 Lex Scaner::get_lex () 
 {
     do {
@@ -119,7 +99,7 @@ Lex Scaner::get_lex ()
                 } else {
                     state = S;
                     read_next = false;
-                    return Lex (LEX_ID, TID.put(buf));
+                    return Lex (LEX_ID, buf);
                 }
                 break;
             case NUM :
@@ -128,7 +108,7 @@ Lex Scaner::get_lex ()
                 } else {
                     state = S;
                     read_next = false;
-                    return Lex (LEX_NUM, stoi(buf));
+                    return Lex (LEX_NUM, buf);
                 }
                 break;
             case SIGN :
@@ -160,7 +140,7 @@ Lex Scaner::get_lex ()
 
 Lex Lex_seq_input_iterator::operator* () 
 {
-    if (lex.get_type() == LEX_FIN) {
+    if (lex.get_lex_type() == LEX_FIN) {
         lex_num = -1;
     }
     return lex;
