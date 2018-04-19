@@ -3,6 +3,7 @@
 
 #include "lexer.hpp"
 #include <stack>
+#include <vector>
 
 class Parser {
     
@@ -10,6 +11,7 @@ class Parser {
     Lex cur_lex;
     type_of_lex cur_type;
     std::stack<Type> st_type;
+    std::vector<Lex> poliz;
     void get_lex ();
     void S ();
     void Expr ();
@@ -23,6 +25,8 @@ class Parser {
   public :
     Parser (Lex_seq &lex_seq) : cur_pos(lex_seq.begin()) {}
     void parse ();
+    void print_poliz ();
+    void print_expr ();
 
 };
 

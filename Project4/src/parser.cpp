@@ -39,6 +39,7 @@ void Parser::Add_expr1 ()
         //std::cout << cur_lex << std::endl;
         Expr();
         check_op();
+        poliz.push_back(Lex(LEX_PLUS));
     }
 }
 
@@ -54,6 +55,7 @@ void Parser::Mult_expr1 ()
         get_lex();
         Expr();
         check_op();
+        poliz.push_back(Lex(LEX_TIMES));
     }
 }
 
@@ -63,12 +65,15 @@ void Parser::Mult_expr ()
         case LEX_ID : 
             check();
             st_type.push(cur_lex.get_type());
+            poliz.push_back(cur_lex);
             //std::cout << cur_lex.get_type() << std::endl;
             get_lex();
             Id();
             break;
         case LEX_NUM : 
+            cur_lex.set_type(Type(TYPE_INT, 0));
             st_type.push(Type(TYPE_INT, 0));
+            poliz.push_back(cur_lex);
             get_lex();
             break;
         case LEX_LPAREN :
@@ -90,6 +95,7 @@ void Parser::Id ()
 {
     //std::cout << cur_lex << std::endl;
     if (cur_type == LEX_LSQPAR) {
+        poliz.push_back(cur_lex);
         Type tmp = st_type.top();
         st_type.pop();
         --tmp.arr_dim;
@@ -107,6 +113,7 @@ void Parser::Id ()
         if (cur_type != LEX_RSQPAR) {
             throw std::runtime_error("NO RIGHT SQUARE PAREN");
         }
+        poliz.push_back(cur_lex);
         get_lex();
         Id();
     }
@@ -149,5 +156,56 @@ void Parser::check_op ()
         st_type.push(Type(TYPE_INT, 0));
     } else {
         throw std::runtime_error("WRONG TYPES");
+    }
+}
+
+void Parser::print_poliz ()
+{
+    for (const Lex &lex : poliz) {
+        std::cout << lex << ' ';
+    }
+    std::cout << std::endl;
+}
+
+void Parser::print_expr ()
+{
+    std::stack<Lex> st_poliz;
+    Lex lex0;
+    int i = 1;
+    for (Lex lex : poliz) {
+    type_of_lex lex_type = lex.get_lex_type();
+        if (lex_type != LEX_PLUS && lex_type != LEX_TIMES && lex_type != LEX_RSQPAR) {
+            if (lex_type == LEX_LSQPAR) {
+                Lex lex1 = st_poliz.top();
+                st_poliz.pop();
+                Type type = lex1.get_type();
+                --type.arr_dim;
+                lex1.set_type(type);
+                st_poliz.push(lex1);
+            }
+            st_poliz.push(lex);
+        } else {
+            if (lex_type == LEX_RSQPAR) {
+                do {
+                    lex0 = st_poliz.top();
+                    st_poliz.pop();
+                } while (lex0.get_lex_type() != LEX_LSQPAR);
+            } else {
+                Lex lex1 = st_poliz.top();
+                st_poliz.pop();
+                Lex lex2 = st_poliz.top();
+                st_poliz.pop();
+                std::cout << i << ") " << lex1 << ' ' << lex << ' ' << lex2 << " -----> " << Type(TYPE_INT, 0) << std::endl;
+                st_poliz.push(Lex(lex1.get_lex_type(), "Expr" + std::to_string(i), lex1.get_type()));
+                ++i;
+            }
+        }
+    }
+    std::cout << "Standalone expresions : " << std::endl;
+    while (!st_poliz.empty()) {
+        Lex lex = st_poliz.top();
+        std::cout << i << ") " << st_poliz.top() << " -----> " << lex.get_type() << std::endl;
+        ++i;
+        st_poliz.pop();
     }
 }

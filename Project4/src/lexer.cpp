@@ -12,28 +12,28 @@ std::ostream& operator << (std::ostream& str, Lex lex)
             str << "LEX_FIN" << " , " << lex.name;
             break;
         case LEX_ID :
-            str << "LEX_ID" << " , " << lex.name;
+            str << lex.name;
             break;
         case LEX_NUM :
-            str << "LEX_NUM" << " , " << lex.name;
+            str << lex.name;
             break;
         case LEX_PLUS :
-            str << "LEX_PLUS" << " , " << lex.name;
+            str << "+";
             break;
         case LEX_TIMES :
-            str << "LEX_TIMES" << " , " << lex.name;
+            str << "*";
             break;
         case LEX_LPAREN :
-            str << "LEX_LPAREN" << " , " << lex.name;
+            str << "(";
             break;
         case LEX_RPAREN :
-            str << "LEX_RPAREN" << " , " << lex.name;
+            str << ")";
             break;
         case LEX_LSQPAR :
-            str << "LEX_LSQPAR" << " , " << lex.name;
+            str << "[";
             break;
         case LEX_RSQPAR :
-            str << "LEX_RSQPAR" << " , " << lex.name;
+            str << "]";
             break;
         case LEX_NULL :
             str << "LEX_NULL" << " , " << lex.name;
@@ -46,18 +46,21 @@ std::ostream& operator << (std::ostream& str, Lex lex)
 
 std::ostream& operator << (std::ostream& str, Type type)
 {
+    if (type.arr_dim != 0) {
+        str << type.arr_dim << " dimensional array of ";
+    }
     switch (type.type) {
         case TYPE_NULL :
-            str << "TYPE_NULL, " << type.arr_dim;
+            str << "TYPE_NULL, ";
             return str;
         case TYPE_INT :
-            str << "TYPE_INT, " << type.arr_dim;
+            str << "integer ";
             return str;
         case TYPE_STRING :
-            str << "TYPE_STRING, " << type.arr_dim;
+            str << "string, ";
             return str;
 	default :
-	    str << type.type << ", " << type.arr_dim;
+	    str << type.type;
 	    return str;
     }
 }
