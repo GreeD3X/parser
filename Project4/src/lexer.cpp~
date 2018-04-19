@@ -40,7 +40,6 @@ std::ostream& operator << (std::ostream& str, Lex lex)
 	    break;
 	default :
 	    str << lex.type << " , " << lex.val;
-    }
     return str;
 }
 

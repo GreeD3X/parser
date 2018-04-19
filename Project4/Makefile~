@@ -17,7 +17,7 @@ obj/%.o : src/%.cpp
 	$(CC) $< $(CFLAGS) -MM > obj/$*.d
 
 run : $(EXEC)
-	./$(EXEC)
+	valgrind ./$(EXEC)
 
 clean :
 	rm -f *.out *.s obj/*.o obj/*.d

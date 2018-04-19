@@ -6,6 +6,7 @@ int main() {
     {
         Scaner scaner("tests/test0.txt");
         Lex_seq seq(scaner);
+        std::cout << *(++seq.begin()) << std::endl;
         for (const auto &x : seq) {
             std::cout << x << std::endl;
         }
