@@ -86,11 +86,6 @@ void Parser::Mult_expr ()
     }
 }
 
-/*void Parser::Id ()
-{
-    Id1();
-}*/
-
 void Parser::Id ()
 {
     //std::cout << cur_lex << std::endl;
@@ -121,7 +116,7 @@ void Parser::check ()
 {
     int ind = cur_lex.get_val();
     std::string name = (*TID)[cur_lex.get_val()].get_name();
-    char letter;
+    char letter = 0;
     int cnt = -1;
     for (auto c : name) {
         std::cout << '|' << c << "|\n";

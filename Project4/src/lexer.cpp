@@ -23,6 +23,9 @@ std::ostream& operator << (std::ostream& str, Type type)
         case TYPE_STRING :
             str << "TYPE_STRING, " << type.arr_dim;
             return str;
+	default :
+	    str << type.type << ", " << type.arr_dim;
+	    return str;
     }
 }
             
