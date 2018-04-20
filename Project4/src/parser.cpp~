@@ -39,8 +39,8 @@ void Parser::Add_expr1 ()
         //std::cout << cur_lex << std::endl;
         Add_expr();
         check_op();
-        poliz.push_back(Lex(LEX_PLUS));
         Add_expr1();
+        poliz.push_back(Lex(LEX_PLUS));
     }
 }
 
@@ -56,8 +56,8 @@ void Parser::Mult_expr1 ()
         get_lex();
         Mult_expr();
         check_op();
-        poliz.push_back(Lex(LEX_TIMES));
         Mult_expr1();
+        poliz.push_back(Lex(LEX_TIMES));
     }
 }
 
