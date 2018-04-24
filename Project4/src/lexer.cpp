@@ -65,17 +65,28 @@ std::ostream& operator << (std::ostream& str, Type type)
     }
 }
             
+std::ostream& operator << (std::ostream& str, Exception excp)
+{
+    str << excp.str_num << ":" << excp.char_num << ": " << excp.what;
+    return str;
+}
+
 Lex Scaner::get_lex () 
 {
     do {
         if (read_next) {
             c = file.get();
+            ++char_num;
         } else {
             read_next = true;
         }
         switch (state) {
             case S :
                 if (c == ' ' || c == '\n' || c == '\t' || c == '\r' ) {
+                    if (c == '\n') {
+                        ++str_num;
+                        char_num = 0;
+                    }
                     break;
                 } else {
                     buf.clear();
@@ -135,7 +146,7 @@ Lex Scaner::get_lex ()
                     state = S; 
                     return Lex (LEX_RSQPAR);
                 default : 
-                    throw std::runtime_error("UNEXPECTED SYMBOL");
+                    throw Exception("UNEXPECTED SYMBOL", str_num, char_num);
                 }
         }
     } while (true);

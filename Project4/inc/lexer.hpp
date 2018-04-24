@@ -33,9 +33,10 @@ class Type {
     Type (types type = TYPE_NULL, int arr_dim = 0) : type(type), arr_dim(arr_dim) {}
     bool operator == (const Type &type) { return this->type == type.type && this->arr_dim == type.arr_dim; }
     bool operator != (const Type &type) { return this->type != type.type || this->arr_dim != type.arr_dim; }
-    friend std::ostream& operator << (std::ostream&, Type);
 
 };
+
+std::ostream& operator << (std::ostream&, Type);
 
 class Lex {
 
@@ -61,7 +62,9 @@ class Scaner {
     bool read_next;
     char c;
   public :
-    Scaner (const std::string& name) : state(S), read_next(true) { file.open(name); }
+    int str_num;
+    int char_num;
+    Scaner (const std::string& name) : state(S), read_next(true), str_num(1), char_num(0) { file.open(name); }
     Lex get_lex ();
 
 };  
@@ -72,6 +75,9 @@ class Lex_seq_input_iterator : public std::iterator<std::input_iterator_tag, std
     int lex_num;
     Lex lex;
   public :
+    int get_str_num () { return scaner->str_num; }
+    int get_char_num () { return scaner->char_num; }
+    int char_num;
     Lex_seq_input_iterator (Scaner *scaner, int lex_num) : scaner(scaner), lex_num(lex_num) {};
     Lex operator* (); 
     Lex_seq_input_iterator& operator++ ();
@@ -104,5 +110,17 @@ class Lex_seq {
     }
 
 };
+
+class Exception {
+   
+  public :
+    std::string what;
+    int str_num;
+    int char_num;
+    Exception (const std::string &what, const int str_num, const int char_num) : what(what), str_num(str_num), char_num(char_num) {}
+
+};
+
+std::ostream& operator << (std::ostream&, Exception);
 
 #endif

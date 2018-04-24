@@ -36,7 +36,6 @@ void Parser::Add_expr1 ()
 {
     if (cur_type == LEX_PLUS) {
         get_lex();
-        //std::cout << cur_lex << std::endl;
         Add_expr();
         check_op();
         poliz.push_back(Lex(LEX_PLUS));
@@ -83,13 +82,13 @@ void Parser::Mult_expr ()
             //std::cout << cur_lex << std::endl;
             Expr();
             if (cur_type != LEX_RPAREN) {
-                throw std::runtime_error("NO RIGHT PAREN");
+                throw Exception("NO RIGHT PAREN", cur_pos.get_str_num(), cur_pos.get_char_num());
             }
             //std::cout << cur_lex << std::endl;
             get_lex();
             break;
         default :
-            throw std::runtime_error("WRONG LEXEM");
+            throw Exception("WRONG LEXEM", cur_pos.get_str_num(), cur_pos.get_char_num());
     }
 }
 
@@ -102,18 +101,18 @@ void Parser::Id ()
         st_type.pop();
         --tmp.arr_dim;
         if (tmp.arr_dim < 0) {
-            throw std::runtime_error("INDEX APPEAL ERROR");
+            throw Exception("INDEX APPEAL ERROR", cur_pos.get_str_num(), cur_pos.get_char_num());
         }
         st_type.push(tmp);
         get_lex();
         Expr();
         //std::cout << "<" << st_type.top() << ">" << std::endl;
         if (st_type.top() != Type(TYPE_INT, 0)) {
-            throw std::runtime_error("INDEX IS NOT INTEGER");
+            throw Exception("INDEX IS NOT INTEGER", cur_pos.get_str_num(), cur_pos.get_char_num());
         }
         st_type.pop();
         if (cur_type != LEX_RSQPAR) {
-            throw std::runtime_error("NO RIGHT SQUARE PAREN");
+            throw Exception("NO RIGHT SQUARE PAREN", cur_pos.get_str_num(), cur_pos.get_char_num());
         }
         poliz.push_back(cur_lex);
         get_lex();
@@ -129,7 +128,7 @@ void Parser::check ()
     for (auto c : name) {
         //std::cout << '|' << c << "|\n";
         if (c != 'i' && c != 'j' && c != 'k' && c != 's' && c != 't' && c != 'a') {
-            throw std::runtime_error("WRONG ID");
+            throw Exception("WRONG ID", cur_pos.get_str_num(), cur_pos.get_char_num());
         } else {
             ++cnt;
             letter = c;
@@ -141,7 +140,7 @@ void Parser::check ()
         if (letter == 's' || letter == 't') {
                 cur_lex.set_type(Type(TYPE_STRING, cnt));
         } else { 
-                throw std::runtime_error("WRONG ID");
+                throw Exception("WRONG ID", cur_pos.get_str_num(), cur_pos.get_char_num());
         }
     }
 }
@@ -157,7 +156,7 @@ void Parser::check_op ()
     if (type1 == Type(TYPE_INT, 0) && type2 == Type(TYPE_INT, 0)) {
         st_type.push(Type(TYPE_INT, 0));
     } else {
-        throw std::runtime_error("WRONG TYPES");
+        throw Exception("WRONG TYPES", cur_pos.get_str_num(), cur_pos.get_char_num());
     }
 }
 
