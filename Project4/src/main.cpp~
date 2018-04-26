@@ -16,14 +16,18 @@ void test_parser (const std::string &name)
     Scaner scaner(name);
     Lex_seq seq(scaner);
     Parser parser(seq);
-    parser.parse();
-    parser.print_poliz();
-    parser.print_expr();
+    try {
+        parser.parse();
+        parser.print_poliz();
+        parser.print_expr();
+    } catch (const Exception &excp) {
+        std::cout << excp << std::endl;
+    } 
 }
 
 int main() {
-    //test_lexer("tests/test3.txt");
+    test_lexer("tests/test1.txt");
     std::cout << std::endl << "************" << std::endl << std::endl;
-    test_parser("tests/test3.txt");
+    test_parser("tests/test4.txt");
     return 0;
 }

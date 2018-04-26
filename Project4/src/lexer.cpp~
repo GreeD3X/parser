@@ -36,7 +36,7 @@ std::ostream& operator << (std::ostream& str, Lex lex)
             str << "]";
             break;
         case LEX_NULL :
-            str << "LEX_NULL" << lex.name;
+            str << "LEX_NULL" << " , " << lex.name;
             break;
         default :
             str << lex.lex_type << " , " << lex.name;

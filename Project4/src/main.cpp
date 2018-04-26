@@ -7,8 +7,9 @@ void test_lexer (const std::string &name)
     Scaner scaner(name);
     Lex_seq seq(scaner);
     for (const auto &x : seq) {
-        std::cout << x << std::endl;
+        std::cout << x << ' ';
     }
+    std::cout << std::endl;
 }
 
 void test_parser (const std::string &name)
@@ -26,8 +27,8 @@ void test_parser (const std::string &name)
 }
 
 int main() {
-    //test_lexer("tests/test3.txt");
+    test_lexer("tests/test1.txt");
     std::cout << std::endl << "************" << std::endl << std::endl;
-    test_parser("tests/test3.txt");
+    test_parser("tests/test4.txt");
     return 0;
 }
