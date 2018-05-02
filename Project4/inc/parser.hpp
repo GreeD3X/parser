@@ -19,7 +19,7 @@ class Parser {
     void Add_expr1 ();
     void Mult_expr ();
     void Mult_expr1 ();
-    void Id ();
+    void Index ();
     void check ();
     void check_op ();
   public :
@@ -27,6 +27,20 @@ class Parser {
     void parse ();
     void print_poliz ();
     void print_expr ();
+
+};
+
+class Syntax_exception : public Exception {
+   
+  public :
+    Syntax_exception (const std::string &what, const int str_num, const int char_num) : Exception(what, str_num, char_num) { this->what = "SYNTAX:" + what; }
+
+};
+
+class Semantic_exception : public Exception {
+   
+  public :
+    Semantic_exception (const std::string &what, const int str_num, const int char_num) : Exception(what, str_num, char_num) { this->what = "SENANTICS:" + what; }
 
 };
 

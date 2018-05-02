@@ -65,12 +65,6 @@ std::ostream& operator << (std::ostream& str, Type type)
     }
 }
             
-std::ostream& operator << (std::ostream& str, Exception excp)
-{
-    str << excp.str_num << ":" << excp.char_num << ": " << excp.what;
-    return str;
-}
-
 Lex Scaner::get_lex () 
 {
     do {
@@ -146,7 +140,7 @@ Lex Scaner::get_lex ()
                     state = S; 
                     return Lex (LEX_RSQPAR);
                 default : 
-                    throw Exception("UNEXPECTED SYMBOL", str_num, char_num);
+                    throw Lex_exception("UNEXPECTED SYMBOL", str_num, char_num);
                 }
         }
     } while (true);

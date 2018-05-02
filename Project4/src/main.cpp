@@ -22,7 +22,7 @@ void test_parser (const std::string &name)
         parser.print_poliz();
         parser.print_expr();
     } catch (const Exception &excp) {
-        std::cout << excp << std::endl;
+        std::cout << excp.str_num << ":" << excp.char_num << ":" << excp.what << std::endl;
     } 
 }
 

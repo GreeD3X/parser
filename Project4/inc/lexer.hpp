@@ -112,12 +112,19 @@ class Lex_seq {
 };
 
 class Exception {
-   
+
   public :
     std::string what;
     int str_num;
     int char_num;
     Exception (const std::string &what, const int str_num, const int char_num) : what(what), str_num(str_num), char_num(char_num) {}
+
+};
+
+class Lex_exception : public Exception {
+   
+  public :
+    Lex_exception (const std::string &what, const int str_num, const int char_num) : Exception(what, str_num, char_num) { this->what = "LEXER:" + what; }
 
 };
 

@@ -4,7 +4,6 @@ void Parser::get_lex ()
 {
     ++cur_pos;
     cur_lex = *cur_pos;
-    //std::cout << cur_lex << std::endl;
     cur_type = cur_lex.get_lex_type();
 }   
 
@@ -18,45 +17,29 @@ void Parser::parse ()
 void Parser::S ()
 {
     while (cur_type != LEX_FIN) {
-        //std::cout << cur_lex << std::endl;
         Expr();
     }
 }
 
 void Parser::Expr ()
 {
-    //std::cout << cur_lex << std::endl;
     Add_expr();
-    //get_lex();
-    //std::cout << cur_lex  << " RPAREN"<< std::endl;
-    Add_expr1();
-}
-
-void Parser::Add_expr1 ()
-{
-    if (cur_type == LEX_PLUS) {
+    while (cur_lex.get_lex_type() == LEX_PLUS) {
         get_lex();
         Add_expr();
         check_op();
         poliz.push_back(Lex(LEX_PLUS));
-        Add_expr1();
     }
 }
 
 void Parser::Add_expr ()
 {
     Mult_expr();
-    Mult_expr1();
-}
-
-void Parser::Mult_expr1 ()
-{
-    if (cur_type == LEX_TIMES) {
+    while (cur_lex.get_lex_type() == LEX_TIMES) {
         get_lex();
         Mult_expr();
         check_op();
         poliz.push_back(Lex(LEX_TIMES));
-        Mult_expr1();
     }
 }
 
@@ -67,9 +50,8 @@ void Parser::Mult_expr ()
             check();
             st_type.push(cur_lex.get_type());
             poliz.push_back(cur_lex);
-            //std::cout << cur_lex.get_type() << std::endl;
             get_lex();
-            Id();
+            Index();
             break;
         case LEX_NUM : 
             cur_lex.set_type(Type(TYPE_INT, 0));
@@ -79,44 +61,40 @@ void Parser::Mult_expr ()
             break;
         case LEX_LPAREN :
             get_lex();
-            //std::cout << cur_lex << std::endl;
             Expr();
             if (cur_type != LEX_RPAREN) {
-                throw Exception("NO RIGHT PAREN", cur_pos.get_str_num(), cur_pos.get_char_num());
+                throw Syntax_exception("NO RIGHT PAREN", cur_pos.get_str_num(), cur_pos.get_char_num());
             }
-            //std::cout << cur_lex << std::endl;
             get_lex();
             break;
         default :
-            throw Exception("WRONG LEXEM", cur_pos.get_str_num(), cur_pos.get_char_num());
+            throw Syntax_exception("WRONG LEXEM", cur_pos.get_str_num(), cur_pos.get_char_num());
     }
 }
 
-void Parser::Id ()
+void Parser::Index ()
 {
-    //std::cout << cur_lex << std::endl;
     if (cur_type == LEX_LSQPAR) {
         poliz.push_back(cur_lex);
         Type tmp = st_type.top();
         st_type.pop();
         --tmp.arr_dim;
         if (tmp.arr_dim < 0) {
-            throw Exception("INDEX APPEAL ERROR", cur_pos.get_str_num(), cur_pos.get_char_num());
+            throw Semantic_exception("INDEX APPEAL ERROR", cur_pos.get_str_num(), cur_pos.get_char_num());
         }
         st_type.push(tmp);
         get_lex();
         Expr();
-        //std::cout << "<" << st_type.top() << ">" << std::endl;
         if (st_type.top() != Type(TYPE_INT, 0)) {
-            throw Exception("INDEX IS NOT INTEGER", cur_pos.get_str_num(), cur_pos.get_char_num());
+            throw Semantic_exception("INDEX IS NOT INTEGER", cur_pos.get_str_num(), cur_pos.get_char_num());
         }
         st_type.pop();
         if (cur_type != LEX_RSQPAR) {
-            throw Exception("NO RIGHT SQUARE PAREN", cur_pos.get_str_num(), cur_pos.get_char_num());
+            throw Syntax_exception("NO RIGHT SQUARE PAREN", cur_pos.get_str_num(), cur_pos.get_char_num());
         }
         poliz.push_back(cur_lex);
         get_lex();
-        Id();
+        Index();
     }
 }
 
@@ -126,9 +104,8 @@ void Parser::check ()
     char letter = 0;
     int cnt = -1;
     for (auto c : name) {
-        //std::cout << '|' << c << "|\n";
         if (c != 'i' && c != 'j' && c != 'k' && c != 's' && c != 't' && c != 'a') {
-            throw Exception("WRONG ID", cur_pos.get_str_num(), cur_pos.get_char_num());
+            throw Semantic_exception("WRONG ID", cur_pos.get_str_num(), cur_pos.get_char_num());
         } else {
             ++cnt;
             letter = c;
@@ -140,7 +117,7 @@ void Parser::check ()
         if (letter == 's' || letter == 't') {
                 cur_lex.set_type(Type(TYPE_STRING, cnt));
         } else { 
-                throw Exception("WRONG ID", cur_pos.get_str_num(), cur_pos.get_char_num());
+                throw Semantic_exception("WRONG ID", cur_pos.get_str_num(), cur_pos.get_char_num());
         }
     }
 }
@@ -151,12 +128,11 @@ void Parser::check_op ()
     type2 = st_type.top();
     st_type.pop();
     type1 = st_type.top();
-    //std::cout << type1 << " " << type2 << std::endl;
     st_type.pop();
     if (type1 == Type(TYPE_INT, 0) && type2 == Type(TYPE_INT, 0)) {
         st_type.push(Type(TYPE_INT, 0));
     } else {
-        throw Exception("WRONG TYPES", cur_pos.get_str_num(), cur_pos.get_char_num());
+        throw Semantic_exception("WRONG TYPES", cur_pos.get_str_num(), cur_pos.get_char_num());
     }
 }
 

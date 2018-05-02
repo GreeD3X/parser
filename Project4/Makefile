@@ -20,5 +20,5 @@ run : $(EXEC)
 	./$(EXEC)
 
 clean :
-	rm -f *.out *.s obj/*.o obj/*.d
+	rm -f *.out *.s obj/*.o obj/*.d src/*.cpp~
 	rm -rf *.dSYM
